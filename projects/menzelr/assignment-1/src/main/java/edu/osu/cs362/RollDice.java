@@ -9,21 +9,23 @@ class Dice{
 		}
 		//without args assumes d6
 		public void roll(){
-			die1 = (int)(Math.random() * 6) + 1;
+			//BUG: need to add + 1 to random number to get number between 1 and 6. 
+			//this will produce result between 0 and 5
+			die1 = (int)(Math.random() * 6);
 		}
 		//method to simulate die roll having specified side count
 		public void roll(int sides){
 			die1 = (int)(Math.random() * sides) + 1;
 		}
-		//refactor into one function which takes the die number 
-		//as arg and returns value for specified die
 		public int getDie1(){
 			return die1;
 		}
 		//simple list sum method
 		public int getTotal(List<Integer> list){
 			int total = 0;
-			for (int i = 0; i < list.size(); i++) {
+			//BUG: <= list.size() should crash program -> array out of bounds
+			//should be < list.size()
+			for (int i = 0; i <= list.size(); i++) {
 				total += list.get(i);
 			}
 			return total;
@@ -42,17 +44,24 @@ class Dice{
 public class RollDice {
 		
 		public static void main(String[] args) {
-				//must be called with arguments
-				//BUG: using == 1 will crash program (index out of bounds)
-				if (args.length == 2){
-					int dieType = 0; 												//number of side for dice <- args[0]
-					int dieCount = 0;												//number of dice to roll <- args[1]
-					int rollCount;													//number of completed rolls
+			
+				int dieType = 0; 												//number of side for dice <- args[0]
+				int dieCount = 0;												//number of dice to roll <- args[1]
+				int rollCount;													//number of completed rolls
 					
-					List<Integer> diceList = new ArrayList<Integer>();//list to hold rolled values 
-					int sideArr[] = {4,6,8,10,12,20}; 			//array containing valid values for args[0] aka die type
+				List<Integer> diceList = new ArrayList<Integer>();//list to hold rolled values 
+				int sideArr[] = {4,6,8,10,12,20}; 			//array containing valid values for args[0] aka die type
 					
-					Dice dice = new Dice();									//create instance of Dice object			 
+				Dice dice = new Dice();									//create instance of Dice object
+					
+				if (args.length == 0) {
+					dice.roll();
+					System.out.println(dice.getDie1());
+				}
+				//BUG: using == 1 will crash program (index out of bounds) 
+				//should be == 2
+				else if (args.length == 1){
+								 
 					
 					//attempt to parse args[0] as an int
 					try {
@@ -64,7 +73,8 @@ public class RollDice {
 					//verify that dieType is valid
 					//binarySearch returns >= only if target is found in array
 					//BUG: >= 0 will cause unusual behavior
-					if (Arrays.binarySearch(sideArr, dieType) < 0) {
+					//should be < 0
+					if (Arrays.binarySearch(sideArr, dieType) >= 0) {
 						System.err.println("\n" + (char)27 + "[31m!!ERROR!!" + (char)27 + "[0m Specified die type " + dieType + " is not valid. Accepted values are 4, 6, 8, 10, 12, or 20\n");
 						System.exit(3);
 					}
@@ -90,11 +100,9 @@ public class RollDice {
 						System.out.println("Critical Miss!");
 					}
 
-			
 				} else {
-					//System.err.println((char)27 + "[31mtest" + (char)27 + "[0m");
 					System.err.println("\n" + (char)27 + "[31m!!ERROR!!" + (char)27 + "[0m Incorrect Number of Arguments in Program Call!");
-					System.err.println("Invoke as follows: java RollDice <dice type> <dice count>\n");
+					System.err.println("Invoke as follows: java RollDice <dice type> <dice count> OR java RollDice\n");
 					System.exit(1);
 				}
 		}
