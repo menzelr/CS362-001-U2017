@@ -1,0 +1,11 @@
+@Test
+	// Covered goals for unit test test01():
+	// The goal of the test01 is to call the public method getApptRange with the exact objects too cover the following targets:
+	// Switch Statement in the private method getNextApptOccurrence
+	// in particular case Appt.RECUR_BY_MONTHLY
+	 public void test01()  throws Throwable  {
+		 
+        
+  
+
+	 }

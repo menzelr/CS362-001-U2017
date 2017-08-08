@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: calendar.CalDay_ESTest
+-------------------------------------------------------------------------------
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.66 sec - in calendar.CalDay_ESTest
