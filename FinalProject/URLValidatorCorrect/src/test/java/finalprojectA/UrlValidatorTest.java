@@ -89,6 +89,8 @@ public class UrlValidatorTest extends TestCase {
       assertTrue(urlVal.isValid("http://www.google.com/"));
       int statusPerLine = 60;
       int printed = 0;
+			int count = 0;//my code delete
+			System.out.print("\n" + (char)27 + "[31m!!ATTN!!" + (char)27 + "[0m testPartsIndex: " + testPartsIndextoString() + "\n\n");//my code delete
       if (printIndex)  {
          statusPerLine = 6;
       }
@@ -109,7 +111,7 @@ public class UrlValidatorTest extends TestCase {
         	 System.out.println(url);
          assertEquals(url, expected, result);
          
-         if (printStatus) {
+         if (true) {//printStatus
             if (printIndex) {
                //System.out.print(testPartsIndextoString());
             } else {
@@ -125,7 +127,12 @@ public class UrlValidatorTest extends TestCase {
                printed = 0;
             }
          }
+				 count++;//my code delete
+				 System.out.println("\n" + (char)27 + "[31m!!ATTN!!" + (char)27 + "[0m URL: " + url);//my code delete
+				 System.out.println((char)27 + "[31m!!ATTN!!" + (char)27 + "[0m testPartsIndex in loop: " + testPartsIndextoString());//my code delete
+				 System.out.println((char)27 + "[31m!!ATTN!!" + (char)27 + "[0m Running count: " + count + "\n");//my code delete
       } while (incrementTestPartsIndex(testPartsIndex, testObjects));
+			System.out.println("\n" + (char)27 + "[31m!!ATTN!!" + (char)27 + "[0m Execution count: " + count + "\n");//my code delete
       if (printStatus) {
          System.out.println();
       }
