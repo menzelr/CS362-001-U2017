@@ -34,23 +34,25 @@ public class UrlValidatorTest extends TestCase {
 	
 	//BEGIN DECLARATION BLOCK//////////////////////////////////////////////////////////////////////////
 	//pool of protocol values and associated validity lookup
-	public static final int protocolSize = 20;
+	public static final int protocolSize = 22;
 
-	//ignores local file access ex. file:///C:/Users/User/file.html -- add
+	
 	public String[] protocolList = {"http://",	"https://",	"",					"http:/",
 																	"ftp://", 	"sftp://", 	"hppt://",	"@",
 																	"http:",		"http",			"https:/",	"https:", 
 																	"https",		" ",				"://",			":", 
-																	"//",				"/",				"http:///",	"fpt://"};
+																	"//",				"/",				"http:///",	"fpt://",
+																	"file:///", "file://"};
 
 	public boolean[] protocolVal = {true, 			true, 			true, 			false,
 																	true, 			true, 			false, 			false, 
 																	false, 			false, 			false, 			false, 
 																	false, 			false, 			false, 			false, 
-																	false, 			false, 			false, 			false};
+																	false, 			false, 			false, 			false,
+																	true,				false};
 	
 	//pool of address values and associated validity lookup
-	public static final int addrSize = 28;
+	public static final int addrSize = 29;
 	//add web.engr.oregonstate.edu
 	public String[] addrList = {"www.google.com",	"google.com",			"uw.edu",					"epa.gov",
 															"www.go.co.uk",		"0.0.0.0",				"255.255.1.255",	"1.com",
@@ -58,7 +60,8 @@ public class UrlValidatorTest extends TestCase {
 															"goo%gle",				"user@mail.com",	"#google",				"256.0.0.1",
 															"go ogle",				" ",							"",								"?",
 															"google.",				".google",        "code.google.com","userid:name@mail.com",
-															"a.b-c.net",			" google.com",		".go.net",				"1.1.1.1."};
+															"a.b-c.net",			" google.com",		".go.net",				"1.1.1.1.",
+															"web.engr.oregonstate.edu"};
 
 	public boolean[] addrVal = {true, 						true, 						true, 						true,
 															true, 						true, 						true, 						true,
@@ -66,7 +69,8 @@ public class UrlValidatorTest extends TestCase {
 															false, 						true,			 				false, 						false,
 															false, 						false, 						false, 						false, 
 															false, 						false,						true,							true,
-															true,							false,						false,						false};
+															true,							false,						false,						false,
+															true};
 	
 	//pool of path values and associated validity lookup -- NOTE: can have path OR port, not both
 	public static final int pathSize = 20;
@@ -116,16 +120,60 @@ public class UrlValidatorTest extends TestCase {
   public void testManualTest(){
 	  UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
 	  System.out.println(urlVal.isValid("http://www.amazon.com"));
+		System.out.println(urlVal.isValid("ht://www.898"));
+	  System.out.println(urlVal.isValid(null));
+	  System.out.println(urlVal.isValid("ht://www.amaz&*.com"));
+	  System.out.println(urlVal.isValid("ht://www.amazon.com/?5+10"));
+	  System.out.println(urlVal.isValid("ftp://go.cc:65535/t123?action=edit&mode=up"));
+	  System.out.println(urlVal.isValid("h*&p://www.amazon.com"));
+	  System.out.println(urlVal.isValid("ftp://go.cc:*()*/t123?action=edit&mode=up"));
+	  System.out.println(urlVal.isValid("ftp://go.cc:65535/t123?action=edit&mode=up"));
 	}   
 	   
      
    
   public void testYourFirstPartition(){
+	  UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES); // goal here is to test every conditional when a good test case url hit it.
 	   
+	  System.out.println(urlVal.isValid("http://www.amazon.com")); //normal valid url
+	   
+	  System.out.println(urlVal.isValid("http://255.255.255.255:8080")); //trying to do ip adress
+	  
+	  System.out.println(urlVal.isValid("http://www.yoursite.com/05/22/2012/index.html")); //valid path
+	   
+	  System.out.println(urlVal.isValid("https://www.google.com/search?q=hello+world&oq=hello+world&aqs=chrome..69i57j0l5.3362j0j8&sourceid=chrome&ie=UTF-8")); //bug? testing valid search query
+	   
+	  System.out.println(urlVal.isValid("http://example.com/over/there?name=ferret"));//bug? query
+	   
+	  System.out.println(urlVal.isValid("http://www.amazon.com/features.htm#print")); // testing valid fragment
+	  
+	  System.out.println(urlVal.isValid("file:///etc/fstab")); //testing for valid file url with an empty authourity
+		 
+	  System.out.println(urlVal.isValid("file:///localhost")); // should work?
   }
    
   public void testYourSecondPartition(){
-	   
+	  UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
+	 
+	  System.out.println(urlVal.isValid(null)); // testing null
+	
+	  System.out.println(urlVal.isValid("h@~p://www.amazon.com")); //hits false scheme
+	
+	  System.out.println(urlVal.isValid("%#@~_"));  //bad scheme trying to test url matcher
+	  
+	  System.out.println(urlVal.isValid("http://www.amazon.com/features.htm# hg")); // i think should be invalid fragment
+	  
+	  System.out.println(urlVal.isValid("http://www.amazon.com/t123?action kdfkl")); //testing invalid query string
+	 
+	  System.out.println(urlVal.isValid("http://255.255.255.255:8080")); //Should be good?
+	  
+	  System.out.println(urlVal.isValid("https://localhost:3000/#/new"));//also?
+	
+	  System.out.println(urlVal.isValid("http://www.amazon.com//")); //testing invalid path
+	  
+	  System.out.println(urlVal.isValid("file://localhost"));// for branch coverage on file condition
+	 
+	  System.out.println(urlVal.isValid("http://")); //for branch coverage on file condition
   }
    
    
@@ -214,8 +262,6 @@ public class UrlValidatorTest extends TestCase {
 			} catch(AssertionError e) {
 				System.out.print("\n" + (char)27 + "[31m!!FAILURE!!" + (char)27 + "[0m URL = " + url + " expected: " + valid + " but was: " + test + "\n");
 			}
-			
-      //assertEquals(url, valid, test);
 			
 	  }//end master FOR loop
   }//end method testIsValid
