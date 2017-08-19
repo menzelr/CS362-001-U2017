@@ -1,4 +1,2 @@
-Final Project:
+This is the Final Project part B submission for Rick Menzel (menzelr) and Marsellus Kelly (everardm)!:wq
 
-Part-A: Due date is  Monday, July 31st at 11:59pm
-Part-B: Due date is Friday, August 18th at 23:59 pm (PST).
